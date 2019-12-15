@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en-US"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+	<head>
+
+		<!-- TITLE OF SITE -->
+		<title>Rik - App Landing Page Template</title>
+
+		<!-- Meta -->
+		<meta charset="utf-8">
+		<meta name="description" content="app landing page template" />
+		<meta name="keywords" content="rik, landing page, gradient background, image background, video background, template, responsive, bootstrap" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+		<!-- FAV AND TOUCH ICONS   -->
+		<link rel="icon" href="images/favicon.ico">
+		<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+		<!-- GOOGLE FONTS -->
+		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600' rel='stylesheet' type='text/css'>
+
+		<!-- BOOTSTRAP CSS -->
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+
+		<!-- POP UP IMAGE AND VIDEO -->
+		<link rel="stylesheet" href="css/plagin-css/plagin.css">
+
+		<!-- FONT ICONS -->
+		<link rel="stylesheet" href="icons/rik-icons/styles.css">
+
+		<!--   COUSTOM CSS link  -->
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/responsive.css">
+
+		<!-- COLOR -->
+		<link rel="stylesheet" href="css/colors/color-1.css" type="text/css" id="color-scheme" />
+		<!-- <link rel="stylesheet" href="css/colors/color-2.css" type="text/css"/> -->
+		<!-- <link rel="stylesheet" href="css/colors/color-3.css" type="text/css"/> -->
+
+		<!--[if lt IE 9]>
+            <script src="js/plagin-js/html5shiv.js"></script>
+            <script src="js/plagin-js/respond.min.js"></script>
+        <![endif]-->
+
+		<script src="js/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+		<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+		<!-- <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script> -->
+
+		<style type="text/css">
+			td {
+				vertical-align: middle;
+			}
+		</style>
+	</head>
+	<body class="">
+
+
+		<!-- Start: Navbar Area
+        ============================= -->
+		<header id="header" class="okayNav-header navbar-fixed-top main-navbar-top">
+			<div class="container">
+				<div class="row">
+
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+
+						<!-- TEMPLATE LOGO LIGHT -->
+						<a class="navbar-brand light-logo" href="index.html"><img src="images/logo-color.png" alt="" class="img-responsive"></a>
+
+					</div> <!-- End: .col-xs-3 -->
+					<div class="col-lg-9 col-md-9 col-sm-9 col-xs-6">
+
+						<nav role="navigation" class="okayNav pull-right" id="js-navbar-menu">
+							<ul id="navbar-nav" class="navbar-nav">
+								<li><a class="btn-nav" href="">Features</a></li>
+								<li><a class="btn-nav" href="">How it works</a></li>
+								<li><a class="btn-nav" href="">Describe</a></li>
+								<li><a class="btn-nav" href="">Subscribe</a></li>
+								<li><a class="btn-nav" href="">Screenshots</a></li>
+								<li><a class="btn-nav" href="">Download App</a></li>
+							</ul>
+						</nav>
+
+					</div> <!-- End: .col-xs-9 -->
+				</div> <!-- End: .row -->
+			</div> <!-- End: .container -->
+		</header><!-- /header -->
+		<!-- End: Navbar Area
+        ============================= -->
+		<div id="box">
+			<table class="table table-striped">
+
+				<caption>进货单</caption>
+				<thead>
+					<tr>
+						<th>名称</th>
+						<th>单价</th>
+						<th>是否到货</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="site in goods">
+						<td v-text="site.goodsName"></td>
+						<td v-text="site.goodsPrice"></td>
+						<td v-if="site.arrivalStatus == 1">是</td>
+						<td v-else>否</td>
+						<td>
+							<button class="btn btn-danger goodsbtn" onclick="gotoGoods(this)">详情</button>
+							<div v-text="site.goodsId" style="display: none;"></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+			添加货物
+		</button>
+		<!-- 模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content" id="addBox">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							添加货物
+						</h4>
+					</div>
+					<div class="modal-body">
+						商品名称
+						<br />
+						<input type="text" v-model="goodsName" />
+						<br />
+						商品单价
+						<br />
+						<input type="text" v-model="goodsPrice" />
+						<br />
+						商品总数
+						<br />
+						<input type="text" v-model="goodsCount" />
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn alert-danger" data-dismiss="modal">关闭
+						</button>
+						<button type="button" class="btn btn-primary testbutton" @click="addGoods()">
+							添加
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: '#box',
+				data: {
+					goods: null,
+					goodsId: null
+				},
+				methods: {
+					post: function() {
+
+						/* //发送 post 请求
+			        this.$http.post('http://localhost:8080/addBuyer',
+					{buyerName:""},
+					{emulateJSON:true}).then(function(res){
+			            alert(res);
+			        }); */
+						//发送get请求
+						this.$http.get('http://localhost:8080/getGoods').then(function(res) {
+							this.$data.goods = res.body;
+						}, function(error) {
+							alert('请检查网络');
+						});
+					}
+				}
+			});
+			window.onload = function() {
+				vm.post();
+			}
+		</script>
+		<script type="text/javascript">
+			function gotoGoods(dom) {
+				$.ajax({
+					type: "post",
+					data: {
+						goodsId: $(dom).next().html()
+					},
+					dataType: "json",
+					url: "http://localhost:8080/gotoGoods",
+					success: function(re) {
+						if (re == "200") {
+							$(window).attr('location', 'goods.html');
+						} else {
+							alert("请检查网络");
+						}
+					},
+					error: function(error) {
+
+					}
+				});
+			}
+		</script>
+		<script type="text/javascript">
+			var vue = new Vue({
+				el: '#addBox',
+				data: {
+					goodsName: null,
+					goodsPrice: null,
+					goodsCount: null
+				},
+				methods: {
+					addGoods: function() {
+						//发送 post 请求
+						if (this.$data.goodsName == null || this.$data.goodsName == "") {
+							alert("请填写商品名称");
+						} else if (this.$data.goodsCount == null || this.$data.goodsCount == "") {
+							alert("请填写商品数量");
+						} else if (this.$data.goodsPrice == null || this.$data.goodsPrice == "") {
+							alert("请填写商品价格");
+						} else if (isNaN(this.$data.goodsCount)) {
+							alert("商品数量请输入数字");
+						} else if (isNaN(this.$data.goodsPrice)) {
+							alert("商品价格请填写数字");
+						} else {
+							this.$http.post('http://localhost:8080/addGoods', {
+									goodsName: this.$data.goodsName,
+									goodsPrice: this.$data.goodsPrice,
+									goodsCount: this.$data.goodsCount
+								}, {
+									emulateJSON: true
+								}).then(res => {
+									alert("添加成功！");
+									$('#myModal').modal('hide');
+									location.reload();
+								})
+								.catch(error => {
+									console.log(error);
+									alert('网络错误，不能访问');
+								});
+						}
+					}
+				}
+			});
+		</script>
+
+		<!-- SCRIPTS 
+        ========================================-->
+		<script src="js/plagin-js/jquery-1.11.3.js"></script>
+		<script src="bootstrap/js/bootstrap.min.js"></script>
+		<script src="js/plagin-js/plagin.js"></script>
+
+		<!-- Custom Script 
+        ==========================================-->
+		<script src="js/custom-scripts.js"></script>
+	</body>
+
+</html>
