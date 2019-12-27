@@ -67,9 +67,9 @@
 			.red {
 				background: orangered;
 			}
-			
+
 			.toggle {
-				margin-top:0;
+				margin-top: 0;
 			}
 		</style>
 	</head>
@@ -202,20 +202,21 @@
 					</div>
 					<div class="modal-body">
 						<span class="input input--isao">
-							<input class="input__field input__field--isao" v-model="buyerName" type="text" id="input-buyer">
+							<input class="input__field input__field--isao" v-model="buyerName" type="text" id="input-buyer" disabled="disabled">
 							<label class="input__label input__label--isao" for="input-buyer" data-content="买家名称">
 								<span class="input__label-content input__label-content--isao">买家名称</span>
 							</label>
 						</span>
 						<br />
 						<div class="toggle toggle--like">
-							<input type="checkbox" id="toggle-orderStatus" @click="chickOrderStatusChange()" v-model="orderStatusBool" class="toggle--checkbox"/>
+							<input type="checkbox" id="toggle-orderStatus" @click="chickOrderStatusChange()" v-model="orderStatusBool" class="toggle--checkbox" />
 							<label class="toggle--btn" for="toggle-orderStatus"><span class="toggle--feature"></span></label>
 						</div>
 						支付状态:<span v-if="orderStatus==1">已支付</span><span v-else>未支付</span>
 						<br />
 						<div class="toggle toggle--daynight">
-							<input type="checkbox" id="toggle-pickupStatus" @click="chickPickupStatusChange()" v-model="pickupStatusBool" class="toggle--checkbox">
+							<input type="checkbox" id="toggle-pickupStatus" @click="chickPickupStatusChange()" v-model="pickupStatusBool"
+							 class="toggle--checkbox">
 							<label class="toggle--btn" for="toggle-pickupStatus"><span class="toggle--feature"></span></label>
 						</div>
 						取货状态:<span v-if="pickupStatus==1">已取货</span><span v-else>未取货</span>
@@ -235,8 +236,8 @@
 						</span>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
-						<button type="button" class="btn btn-primary testbutton" @click="addOrder()">
+						<button type="button" class="btn btn-danger" data-dismiss="modal" @click="reloadOrder()">关闭</button>
+						<button type="button" class="btn btn-primary testbutton" @click="updataOrderInfo()">
 							修改
 						</button>
 					</div>
@@ -246,6 +247,7 @@
 
 		<script type="text/javascript">
 			function outshow(dom) {
+				outshowVue.$data.orderId = $(dom).prev().children(".orderId").html();
 				outshowVue.$data.goodsId = $(dom).prev().children(".goodsId").html();
 				outshowVue.$data.buyerName = $(dom).prev().children(".buyerName").html();
 				outshowVue.$data.buyerId = $(dom).prev().children(".buyerId").html();
@@ -254,14 +256,15 @@
 				outshowVue.$data.goodsRemake = $(dom).prev().children(".goodsRemake").html();
 				outshowVue.$data.buyCount = $(dom).prev().children(".buyCount").html();
 				outshowVue.$data.goodsName = $(dom).prev().children(".goodsName").html();
-				outshowVue.$data.orderStatusBool = outshowVue.$data.orderStatus == 0 ? false:true;
-				outshowVue.$data.pickupStatusBool = outshowVue.$data.pickupStatus == 0 ? false:true;
+				outshowVue.$data.orderStatusBool = outshowVue.$data.orderStatus == 0 ? false : true;
+				outshowVue.$data.pickupStatusBool = outshowVue.$data.pickupStatus == 0 ? false : true;
 			}
 
 			var outshowVue = new Vue({
 				el: '#myModal2',
 				data() {
 					return {
+						orderId: null,
 						goodsId: null,
 						buyerId: null,
 						orderStatus: 0,
@@ -274,23 +277,74 @@
 						goodsName: null,
 					}
 				},
-				methods:{
+				methods: {
 					chickOrderStatusChange: function() {
-						this.$data.orderStatus = this.$data.orderStatusBool != true ? 0 : 1;
-						if(confirm("确定吗？")){
-							alert("您确定修改了");
-						}else{
+						if (confirm("确定吗？")) {
+							this.$data.orderStatus = this.$data.orderStatusBool != true ? 0 : 1;
+							this.$http.post('http://192.168.0.102:8080/updataOrderStatus', {
+								orderId: this.$data.orderId,
+								orderStatus: this.$data.orderStatus
+							}, {
+								emulateJSON: true
+							}).then(mes => {
+								if (mes.body == true) {
+									alert("修改成功");
+									
+								} else {
+									alert("修改失败,请检查网络");
+								}
+							}).catch(error => {
+								alert("请检查网络");
+							});
+						} else {
+							this.$data.orderStatusBool = this.$data.orderStatus != 0 ? true : false;
 							alert("您取消了修改");
 						}
 					},
-					chickPickupStatusChange:function() {
-						this.$data.pickupStatus = this.$data.pickupStatusBool != true ? 0 : 1;
-						if(confirm("确定吗？")){
-							alert("您确定修改了");
-						}else{
+					chickPickupStatusChange: function() {
+						if (confirm("确定吗？")) {
+							this.$data.pickupStatus = this.$data.pickupStatusBool != true ? 0 : 1;
+							this.$http.post('http://192.168.0.102:8080/updataPickupStatus', {
+								orderId: this.$data.orderId,
+								pickupStatus: this.$data.pickupStatus
+							}, {
+								emulateJSON: true
+							}).then(mes => {
+								if (mes.body == true) {
+									alert("修改成功");
+									
+								} else {
+									alert("修改失败,请检查网络");
+								}
+							}).catch(error => {
+								alert("请检查网络");
+							});
+						} else {
+							this.$data.pickupStatusBool = this.$data.pickupStatus != 0 ? true : false;
 							alert("您取消了修改");
 						}
 					},
+					updataOrderInfo: function(){
+						this.$http.post('http://192.168.0.102:8080/updateOrderInfo', {
+							orderId: this.$data.orderId,
+							buyCount: this.$data.buyCount,
+							goodsRemake: this.$data.goodsRemake
+						}, {
+							emulateJSON: true
+						}).then(mes => {
+							if (mes.body == true) {
+								alert("修改成功");
+								location.reload();
+							} else {
+								alert("修改失败,请检查网络");
+							}
+						}).catch(error => {
+							alert("请检查网络");
+						});
+					},
+					reloadOrder: function(){
+						location.reload();
+					}
 				},
 			});
 			var vm = new Vue({
@@ -309,7 +363,7 @@
 			            alert(res);
 			        }); */
 						//发送get请求
-						this.$http.get('http://localhost:8080/getGoodsInfo').then(function(res) {
+						this.$http.get('http://192.168.0.102:8080/getGoodsInfo').then(function(res) {
 							this.$data.orders = res.body;
 						}).catch(error => {
 							alert("网络错误:" + error);
@@ -337,13 +391,13 @@
 				methods: {
 					addOrder: function() {
 						//发送 post 请求
-						this.$http.post('http://localhost:8080/getBuyerByName', {
+						this.$http.post('http://192.168.0.102:8080/getBuyerByName', {
 							buyerName: this.$data.buyerName
 						}, {
 							emulateJSON: true
 						}).then(function(res) {
 							if (res.body != null && res.body != "") {
-								this.$http.post('http://localhost:8080/addOrder', {
+								this.$http.post('http://192.168.0.102:8080/addOrder', {
 									goodsId: vm.$data.orders[0].goodsId,
 									buyerId: res.body[0].buyerId,
 									orderStatus: this.$data.orderStatus,
@@ -364,7 +418,7 @@
 									alert("请检查网络");
 								});
 							} else {
-								this.$http.post('http://localhost:8080/addBuyer', {
+								this.$http.post('http://192.168.0.102:8080/addBuyer', {
 									buyerName: this.$data.buyerName
 								}, {
 									emulateJSON: true
@@ -372,7 +426,7 @@
 									alert(succ + " " + succ.body);
 									if (succ.body > 0) {
 										alert("自动添加买家成功");
-										this.$http.post('http://localhost:8080/addOrder', {
+										this.$http.post('http://192.168.0.102:8080/addOrder', {
 											goodsId: vm.$data.orders[0].goodsId,
 											buyerId: succ.body,
 											orderStatus: this.$data.orderStatus,

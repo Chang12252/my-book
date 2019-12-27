@@ -176,7 +176,7 @@
 			            alert(res);
 			        }); */
 						//发送get请求
-						this.$http.get('http://localhost:8080/getGoods').then(function(res) {
+						this.$http.get('http://192.168.0.102:8080/getGoods').then(function(res) {
 							this.$data.goods = res.body;
 						}, function(error) {
 							alert('请检查网络');
@@ -196,7 +196,7 @@
 						goodsId: $(dom).next().html()
 					},
 					dataType: "json",
-					url: "http://localhost:8080/gotoGoods",
+					url: "http://192.168.0.102:8080/gotoGoods",
 					success: function(re) {
 						if (re == "200") {
 							$(window).attr('location', 'goods.html');
@@ -232,7 +232,7 @@
 						} else if (isNaN(this.$data.goodsPrice)) {
 							alert("商品价格请填写数字");
 						} else {
-							this.$http.post('http://localhost:8080/addGoods', {
+							this.$http.post('http://192.168.0.102:8080/addGoods', {
 									goodsName: this.$data.goodsName,
 									goodsPrice: this.$data.goodsPrice,
 									goodsCount: this.$data.goodsCount
